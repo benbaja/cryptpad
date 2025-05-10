@@ -9,8 +9,8 @@ services:
     hostname: cryptpad
 
     environment:
-      - CPAD_MAIN_DOMAIN=${CPAD_MAIN_DOMAIN}
-      - CPAD_SANDBOX_DOMAIN=${CPAD_SANDBOX_DOMAIN}
+      - CPAD_MAIN_DOMAIN=https://${CPAD_MAIN_DOMAIN}
+      - CPAD_SANDBOX_DOMAIN=https://${CPAD_SANDBOX_DOMAIN}
       - CPAD_CONF=/cryptpad/config/config.js
       - CPAD_INSTALL_ONLYOFFICE=${CPAD_INSTALL_ONLYOFFICE}
 
