@@ -10,7 +10,7 @@ services:
 
     environment:
       - CPAD_MAIN_DOMAIN=${CPAD_MAIN_DOMAIN}
-      - CPAD_SANDBOX_DOMAIN=${CPAD_MAIN_DOMAIN}
+      - CPAD_SANDBOX_DOMAIN=${CPAD_SANDBOX_DOMAIN}
       - CPAD_CONF=/cryptpad/config/config.js
       - CPAD_INSTALL_ONLYOFFICE=${CPAD_INSTALL_ONLYOFFICE}
 
@@ -32,3 +32,26 @@ services:
       nofile:
         soft: 1000000
         hard: 1000000
+    labels:
+      - traefik.enable=true
+      - 'traefik.http.routers.cryptpad-prod-https.rule=Host(`${CPAD_MAIN_DOMAIN}`) && PathPrefix(`/`)'
+      - traefik.http.routers.cryptpad-prod-https.entryPoints=https
+      - traefik.http.routers.cryptpad-prod-https.middlewares=gzip
+      - traefik.http.routers.cryptpad-prod-https.service=cryptpad-prod
+      - traefik.http.routers.cryptpad-prod-https.tls=true
+      - traefik.http.services.cryptpad-prod.loadbalancer.server.port=3000
+      - traefik.http.routers.cryptpad-prod-https.tls.certresolver=letsencrypt
+      - 'traefik.http.routers.cryptpad-prod-http.rule=Host(`${CPAD_MAIN_DOMAIN}`) && PathPrefix(`/`)'
+      - traefik.http.routers.cryptpad-prod-http.entryPoints=http
+      - traefik.http.routers.cryptpad-prod-http.middlewares=redirect-to-https
+      - 'traefik.http.routers.cryptpad-test-https.rule=Host(`${CPAD_SANDBOX_DOMAIN}`) && PathPrefix(`/`)'
+      - traefik.http.routers.cryptpad-test-https.entryPoints=https
+      - traefik.http.routers.cryptpad-test-https.middlewares=gzip
+      - traefik.http.routers.cryptpad-test-https.service=cryptpad-test
+      - traefik.http.routers.cryptpad-test-https.tls=true
+      - traefik.http.services.cryptpad-test.loadbalancer.server.port=3003
+      - traefik.http.routers.cryptpad-test-https.tls.certresolver=letsencrypt
+      - 'traefik.http.routers.cryptpad-test-http.rule=Host(`${CPAD_SANDBOX_DOMAIN}`) && PathPrefix(`/`)'
+      - traefik.http.routers.cryptpad-test-http.entryPoints=http
+      - traefik.http.routers.cryptpad-test-http.middlewares=redirect-to-https
+      
